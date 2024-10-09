@@ -9,7 +9,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:16.14-alpine as builder
+FROM node:22.5-alpine as builder
 
 RUN apk add python3 g++ make libx11 glew-dev libxi-dev ca-certificates
 
@@ -20,13 +20,14 @@ COPY package.json yarn.lock babel.config.js ./
 
 # Install node dependencies
 ENV PUPPETEER_SKIP_DOWNLOAD "true"
-RUN yarn install --mutex network --frozen-lockfile --network-timeout 90000 && yarn cache clean
+RUN yarn install --mutex network --network-timeout 90000 && yarn cache clean
 
 # Build our static files
 COPY . .
+ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN yarn run build
 
-FROM node:16.14-alpine
+FROM node:22.5-alpine
 
 # Install required binaries
 RUN apk add ca-certificates curl bash

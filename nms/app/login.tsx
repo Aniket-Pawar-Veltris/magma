@@ -18,6 +18,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import LoginForm from './views/login/LoginForm';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {PrivyProvider} from '@privy-io/react-auth';
 import defaultTheme from './theme/default';
 import nullthrows from '../shared/util/nullthrows';
 import {AppContextProvider} from './context/AppContext';
@@ -30,14 +31,18 @@ function LoginWrapper() {
   const params = new URLSearchParams(window.location.search);
   const loginInvalid = params.get('invalid');
   return (
-    <LoginForm
-      action="/user/login"
-      title="Magma"
-      ssoAction="/user/login/saml"
-      ssoEnabled={window.CONFIG.appData.ssoEnabled}
-      csrfToken={window.CONFIG.appData.csrfToken}
-      error={loginInvalid ? LOGIN_ERROR_MESSAGE : undefined}
-    />
+    <PrivyProvider
+      appId={'clyfcayfs09xl12n7ih3fieps'}
+      onSuccess={() => console.log('Logged in...')}>
+      <LoginForm
+        action="/user/login"
+        title="Magma"
+        ssoAction="/user/login/saml"
+        ssoEnabled={window.CONFIG.appData.ssoEnabled}
+        csrfToken={window.CONFIG.appData.csrfToken}
+        error={loginInvalid ? LOGIN_ERROR_MESSAGE : undefined}
+      />
+    </PrivyProvider>
   );
 }
 
